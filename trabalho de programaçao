@@ -1,0 +1,37 @@
+class Produto:
+    def __init__(self, nome, preco):
+        self.nome = nome
+        self.preco = preco
+
+class Pedido:
+    def __init__(self):
+        self.itens = []
+
+    def adicionar_item(self, produto, quantidade):
+        self.itens.append((produto, quantidade))
+
+    def calcular_total(self):
+        return sum(produto.preco * quantidade for produto, quantidade in self.itens)
+
+    def gerar_recibo(self):
+        print("Recibo da Compra")
+        print("----------------")
+        for produto, quantidade in self.itens:
+            print(f"{produto.nome} x{quantidade} - R${produto.preco * quantidade:.2f}")
+        print("----------------")
+        print(f"Total: R${self.calcular_total():.2f}")
+
+# Criando alguns produtos
+produto1 = Produto("Fertilizante Orgânico", 50.00)
+produto2 = Produto("Sementes de Milho", 20.00)
+produto3 = Produto("Ração para Gado", 80.00)
+
+# Criando um pedido e adicionando itens
+pedido = Pedido()
+pedido.adicionar_item(produto1, 2)
+pedido.adicionar_item(produto2, 5)
+pedido.adicionar_item(produto3, 1)
+
+# Gerando o recibo
+pedido.gerar_recibo()
+
