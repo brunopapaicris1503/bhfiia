@@ -1,37 +1,92 @@
-class Produto:
-    def __init__(self, nome, preco):
-        self.nome = nome
-        self.preco = preco
+<!DOCTYPE html>
+<html lang="pt">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Venda de Produtos</title>
+    <style>
+        body { font-family: Arial, sans-serif; margin: 20px; }
+        .container { max-width: 600px; margin: auto; }
+        select, button { margin-top: 10px; padding: 10px; }
+        .produtos, .carrinho { margin-top: 20px; }
+        .item { margin: 5px 0; }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Venda de Produtos por Localidade</h2>
+        <label for="local">Escolha uma localização:</label>
+        <select id="local" onchange="atualizarProdutos()">
+            <option value="cidade">Cidade</option>
+            <option value="campo">Campo</option>
+        </select>
 
-class Pedido:
-    def __init__(self):
-        self.itens = []
+        <div class="produtos">
+            <h3>Produtos disponíveis:</h3>
+            <div id="lista-produtos"></div>
+        </div>
 
-    def adicionar_item(self, produto, quantidade):
-        self.itens.append((produto, quantidade))
+        <div class="carrinho">
+            <h3>Carrinho de compras:</h3>
+            <div id="carrinho"></div>
+            <button onclick="finalizarCompra()">Finalizar Compra</button>
+        </div>
+    </div>
 
-    def calcular_total(self):
-        return sum(produto.preco * quantidade for produto, quantidade in self.itens)
+    <script>
+        const produtos = {
+            cidade: [
+                { nome: "Notebook", preco: 4000 },
+                { nome: "Smartphone", preco: 2500 },
+                { nome: "Headphone", preco: 300 }
+            ],
+            campo: [
+                { nome: "Sementes de Milho", preco: 100 },
+                { nome: "Ração para Gado", preco: 200 },
+                { nome: "Fertilizante Orgânico", preco: 150 }
+            ]
+        };
 
-    def gerar_recibo(self):
-        print("Recibo da Compra")
-        print("----------------")
-        for produto, quantidade in self.itens:
-            print(f"{produto.nome} x{quantidade} - R${produto.preco * quantidade:.2f}")
-        print("----------------")
-        print(f"Total: R${self.calcular_total():.2f}")
+        let carrinho = [];
 
-# Criando alguns produtos
-produto1 = Produto("Fertilizante Orgânico", 50.00)
-produto2 = Produto("Sementes de Milho", 20.00)
-produto3 = Produto("Ração para Gado", 80.00)
+        function atualizarProdutos() {
+            const local = document.getElementById("local").value;
+            const lista = document.getElementById("lista-produtos");
+            lista.innerHTML = "";
 
-# Criando um pedido e adicionando itens
-pedido = Pedido()
-pedido.adicionar_item(produto1, 2)
-pedido.adicionar_item(produto2, 5)
-pedido.adicionar_item(produto3, 1)
+            produtos[local].forEach((produto, index) => {
+                lista.innerHTML += `<div class="item">
+                    ${produto.nome} - R$${produto.preco.toFixed(2)}
+                    <button onclick="adicionarAoCarrinho(${index}, '${local}')">Adicionar</button>
+                </div>`;
+            });
+        }
 
-# Gerando o recibo
-pedido.gerar_recibo()
+        function adicionarAoCarrinho(index, local) {
+            carrinho.push(produtos[local][index]);
+            atualizarCarrinho();
+        }
 
+        function atualizarCarrinho() {
+            const listaCarrinho = document.getElementById("carrinho");
+            listaCarrinho.innerHTML = "";
+            let total = 0;
+
+            carrinho.forEach((item) => {
+                listaCarrinho.innerHTML += `<div class="item">${item.nome} - R$${item.preco.toFixed(2)}</div>`;
+                total += item.preco;
+            });
+
+            listaCarrinho.innerHTML += `<div class="total"><strong>Total: R$${total.toFixed(2)}</strong></div>`;
+        }
+
+        function finalizarCompra() {
+            alert("Compra finalizada! Obrigado pela preferência.");
+            carrinho = [];
+            atualizarCarrinho();
+        }
+
+        atualizarProdutos();
+    </script>
+</body>
+</html>
